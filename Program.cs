@@ -22,7 +22,15 @@ class Program
             .Build();
 
         var syncService = host.Services.GetRequiredService<ISyncService>();
-        await syncService.ExtractAndSyncContent();
+
+        if (args.Length > 0) {
+            if (args[0].Equals("extract", StringComparison.OrdinalIgnoreCase))
+            {
+                await syncService.ExtractAndSyncContent();
+            } else if(args[0].Equals("generatePdf", StringComparison.OrdinalIgnoreCase)){
+                await syncService.GeneratePDF();
+            }
+        }
     }
 }
 

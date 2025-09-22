@@ -140,5 +140,15 @@ namespace quranTranslationExtractor.Application
                 await InsertTafsir(verse.Tafsir);
             }
         }
+
+        public async Task GeneratePDF()
+        {
+            var suras = await _context.Suras.ToListAsync();
+            var ayats = await _context.Ayats.ToListAsync();
+            var tafsirs = await _context.Tafsirs.ToListAsync();
+
+
+
+        }
     }
 }

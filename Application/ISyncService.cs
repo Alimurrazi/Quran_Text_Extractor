@@ -9,5 +9,6 @@ namespace quranTranslationExtractor.Application
     public interface ISyncService
     {
         public Task ExtractAndSyncContent();
+        public Task GeneratePDF();
     }
 }
