@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
 using quranTranslationExtractor.Data;
 using quranTranslationExtractor.Domain;
 using quranTranslationExtractor.Infrastructure;
@@ -150,32 +152,59 @@ namespace quranTranslationExtractor.Application
             var suras = await _context.Suras.ToListAsync();
             var ayats = await _context.Ayats.ToListAsync();
             var tafsirs = await _context.Tafsirs.ToListAsync();
-            string html = "<div>";
 
-            foreach (var sura in suras)
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "quran_bn_text.pdf");
+            Document.Create(container =>
             {
-                Console.WriteLine(sura.Name);
-                html = html + $"<p>{sura.Name}</p>";
-                var ayatsInSura = ayats.Where(ayat => ayat.SuraIndex == sura.SuraIndex);
-                var ayat = ayatsInSura.FirstOrDefault();
-                if (ayat is not null)
+                container.Page(page =>
                 {
-                    Console.WriteLine(ayat.Content);
-                    html = html + $"<p>{ayat.Content}</p>";
-                    var tafsirsInAyat = tafsirs.Where(tafsir => tafsir.SuraIndex == sura.SuraIndex
-                    && tafsir.AyatIndex == ayat.AyatIndex);
-                    if (tafsirsInAyat is not null)
+                    page.Margin(40);
+                    page.Size(PageSizes.A4);
+
+                    foreach (var sura in suras)
                     {
-                        foreach (var tafsirInAyat in tafsirsInAyat)
+                        page.Content().Column(col =>
                         {
-                            Console.WriteLine(tafsirInAyat.Content);
-                            html = html + $"<p>{tafsirInAyat.Content}</p>";
-                        }
+                            col.Item().Text(sura.Name)
+                            .FontSize(22).Bold().FontColor(Colors.Green.Darken2);
+
+                            col.Spacing(15);
+
+                            var ayatsInSura = ayats.Where(ayat => ayat.SuraIndex == sura.SuraIndex);
+
+                            foreach (var ayat in ayatsInSura)
+                            {
+                                col.Item().Column(vcol =>
+                                {
+                                    vcol.Item().Text($"({ayat.AyatIndex}) {ayat.Content}")
+                                        .FontSize(14)
+                                        .Bold()
+                                        .FontColor(Colors.Black);
+
+                                    var tafsirsInAyat = tafsirs.Where(tafsir => tafsir.SuraIndex == sura.SuraIndex
+                                    && tafsir.AyatIndex == ayat.AyatIndex);
+
+                                    if (tafsirsInAyat.Any())
+                                    {
+                                        foreach (var tafsir in tafsirsInAyat)
+                                        {
+                                            vcol.Item().Text($"{tafsir.TafsirIndexInSura}   • {tafsir.Content}")
+                                                .FontSize(12)
+                                                .FontColor(Colors.Grey.Darken2);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
-                }
-            }
-            html = html + "</div>";
-            RenderPdf(html);
+                    page.Footer().AlignCenter()
+                    .Text(x =>
+                    {
+                        x.Span("Page ").FontSize(10);
+                        x.CurrentPageNumber().FontSize(10);
+                    });
+                });
+            }).GeneratePdf(filePath);
         }
 
         private void RenderPdf(string html)
