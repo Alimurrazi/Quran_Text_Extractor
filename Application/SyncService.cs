@@ -7,13 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace quranTranslationExtractor.Application
 {
-    public class SyncService: ISyncService
+    public class SyncService : ISyncService
     {
         private readonly AppDbContext _context;
         private readonly HttpClient _httpClient;
@@ -27,8 +28,8 @@ namespace quranTranslationExtractor.Application
         {
             var index = 1;
             var suraIndex = 103;
-//            for(int i = 1;i<=114;i++)
-            for(int i = 1;i<=1;i++)
+            //            for(int i = 1;i<=114;i++)
+            for (int i = 1; i <= 1; i++)
             {
                 bool hasData = true;
                 while (hasData)
@@ -62,7 +63,8 @@ namespace quranTranslationExtractor.Application
                         hasData = false;
                         break;
                     }
-                    if (index == 1 && formattedResponse.Data is not null) {
+                    if (index == 1 && formattedResponse.Data is not null)
+                    {
                         await InsertSura(formattedResponse.Data.Rows.Sura);
                     }
                     await PopulateContents(formattedResponse);
@@ -75,10 +77,11 @@ namespace quranTranslationExtractor.Application
         {
             var isExists = await _context.Suras.AnyAsync(sura => sura.SuraIndex == sura.Id);
 
-            if(isExists)
+            if (isExists)
             {
                 Console.WriteLine($"{sura.Name} already exists");
-            } else
+            }
+            else
             {
                 var entity = new Domain.Sura()
                 {
@@ -94,31 +97,32 @@ namespace quranTranslationExtractor.Application
         private async Task InsertAyat(int suraIndex, Verse verse)
         {
             var content = string.Empty;
-            if(verse.Translations is null || verse.Translations.Length == 0)
+            if (verse.Translations is null || verse.Translations.Length == 0)
             {
                 Console.WriteLine("No translations found");
             }
-            else if(verse.Translations.Length > 1)
+            else if (verse.Translations.Length > 1)
             {
-                    Console.WriteLine("Multiple translations found");
-            } else
+                Console.WriteLine("Multiple translations found");
+            }
+            else
             {
                 content = verse.Translations[0].TranslationStr;
             }
 
-           var entity = new Ayat()
-           {
-               AyatIndex = verse.VerseId,
-               SuraIndex = suraIndex,
-               Content = content,
-           };
+            var entity = new Ayat()
+            {
+                AyatIndex = verse.VerseId,
+                SuraIndex = suraIndex,
+                Content = content,
+            };
             _context.Ayats.Add(entity);
             await _context.SaveChangesAsync();
         }
 
         private async Task InsertTafsir(Data.Tafsir[] tafsirs)
         {
-            foreach(var tafsir in tafsirs)
+            foreach (var tafsir in tafsirs)
             {
                 var entity = new Domain.Tafsir()
                 {
@@ -146,9 +150,40 @@ namespace quranTranslationExtractor.Application
             var suras = await _context.Suras.ToListAsync();
             var ayats = await _context.Ayats.ToListAsync();
             var tafsirs = await _context.Tafsirs.ToListAsync();
+            string html = "<div>";
 
-
-
+            foreach (var sura in suras)
+            {
+                Console.WriteLine(sura.Name);
+                html = html + $"<p>{sura.Name}</p>";
+                var ayatsInSura = ayats.Where(ayat => ayat.SuraIndex == sura.SuraIndex);
+                var ayat = ayatsInSura.FirstOrDefault();
+                if (ayat is not null)
+                {
+                    Console.WriteLine(ayat.Content);
+                    html = html + $"<p>{ayat.Content}</p>";
+                    var tafsirsInAyat = tafsirs.Where(tafsir => tafsir.SuraIndex == sura.SuraIndex
+                    && tafsir.AyatIndex == ayat.AyatIndex);
+                    if (tafsirsInAyat is not null)
+                    {
+                        foreach (var tafsirInAyat in tafsirsInAyat)
+                        {
+                            Console.WriteLine(tafsirInAyat.Content);
+                            html = html + $"<p>{tafsirInAyat.Content}</p>";
+                        }
+                    }
+                }
+            }
+            html = html + "</div>";
+            RenderPdf(html);
         }
+
+        private void RenderPdf(string html)
+        {
+            //PdfDocument pdf = new PdfDocument();
+            //pdf = PdfGenerator.GeneratePdf(html, PageSize.A4);
+            //pdf.Save("quran_bn_text.pdf");
+        }
+
     }
 }

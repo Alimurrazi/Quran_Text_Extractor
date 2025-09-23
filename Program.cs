@@ -13,7 +13,6 @@ class Program
         using var host = Host.CreateDefaultBuilder(args)
             .ConfigureServices((context, services) =>
             {
-                Console.WriteLine("Connection string: " + context.Configuration.GetConnectionString("DatabaseString"));
                 services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlite(context.Configuration.GetConnectionString("DatabaseString")));
                 services.AddHttpClient();
@@ -23,14 +22,26 @@ class Program
 
         var syncService = host.Services.GetRequiredService<ISyncService>();
 
-        if (args.Length > 0) {
-            if (args[0].Equals("extract", StringComparison.OrdinalIgnoreCase))
-            {
-                await syncService.ExtractAndSyncContent();
-            } else if(args[0].Equals("generatePdf", StringComparison.OrdinalIgnoreCase)){
-                await syncService.GeneratePDF();
-            }
+        if (args.Length == 0)
+        {
+            Console.WriteLine("Enter a command (extract | generatePdf):");
+            var input = Console.ReadLine();
+            args = new[] { input ?? "" };
         }
+
+        switch (args[0].ToLowerInvariant())
+        {
+            case "extract":
+                await syncService.ExtractAndSyncContent();
+                break;
+            case "generatepdf":
+                await syncService.GeneratePDF();
+                break;
+            default:
+                Console.WriteLine("Unknown command. Use 'extract' or 'generatePdf'.");
+                break;
+        }
+
     }
 }
 
