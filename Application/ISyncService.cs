@@ -10,5 +10,6 @@ namespace quranTranslationExtractor.Application
     {
         public Task ExtractAndSyncContent();
         public Task GeneratePDF();
+        public void PreviewPDF();
     }
 }

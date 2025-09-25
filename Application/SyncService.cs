@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using QuestPDF.Companion;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using quranTranslationExtractor.Data;
@@ -149,12 +150,27 @@ namespace quranTranslationExtractor.Application
 
         public async Task GeneratePDF()
         {
-            var suras = await _context.Suras.ToListAsync();
-            var ayats = await _context.Ayats.ToListAsync();
-            var tafsirs = await _context.Tafsirs.ToListAsync();
+            var(suras, ayats, tafsirs) = await FetchDataAsync();
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "quran_bn_text.pdf");
-            Document.Create(container =>
+            var renderedPdf = GetRenderedPdf(suras, ayats, tafsirs);
+            renderedPdf.GeneratePdf(filePath);
+        }
+
+        public void PreviewPDF()
+        {
+            List<Domain.Sura> suras = new();
+            List<Ayat> ayats = new();
+            List<Domain.Tafsir> tafsirs = new();
+
+            var renderedPdf = GetRenderedPdf(suras, ayats, tafsirs);
+            renderedPdf.ShowInCompanion();
+        }
+
+
+        private Document GetRenderedPdf(List<Domain.Sura> suras, List<Ayat> ayats, List<Domain.Tafsir> tafsirs)
+        {
+            var document = Document.Create(container =>
             {
                 container.Page(page =>
                 {
@@ -242,11 +258,28 @@ namespace quranTranslationExtractor.Application
                         txt.CurrentPageNumber().FontSize(10);
                     });
                 });
-            })
-            .GeneratePdf(filePath);
-
-
+            });
+            return document;
         }
 
+        public async Task<(List<Domain.Sura> Suras, List<Ayat>Ayats, List<Domain.Tafsir>tafsirs)> FetchDataAsync()
+        {
+            try
+            {
+
+                var suraTask =  _context.Suras.ToListAsync();
+                var ayatTask = _context.Ayats.ToListAsync();
+                var tafsirTask = _context.Tafsirs.ToListAsync();
+
+                await Task.WhenAll(suraTask, ayatTask, tafsirTask);
+                return (await suraTask, await ayatTask, await tafsirTask);
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new InvalidOperationException("Failed to Fetch Data", ex);
+            }
+        }
     }
 }

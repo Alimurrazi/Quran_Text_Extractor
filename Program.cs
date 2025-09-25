@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using quranTranslationExtractor.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using quranTranslationExtractor.Application;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 using QuestPDF.Infrastructure;
+using quranTranslationExtractor.Application;
+using quranTranslationExtractor.Data.Enums;
+using quranTranslationExtractor.Infrastructure;
+using System.Data;
+using System.Threading.Tasks;
 
 class Program
 {
@@ -26,21 +28,24 @@ class Program
 
         if (args.Length == 0)
         {
-           Console.WriteLine("Enter a command (extract | generatePdf):");
+           Console.WriteLine("Enter a command (extract | generatePdf | previewPdf):");
            var input = Console.ReadLine();
            args = new[] { input ?? "" };
         }
 
         switch (args[0].ToLowerInvariant())
         {
-           case "extract":
+           case PdfCommandType.Extract:
                await syncService.ExtractAndSyncContent();
                break;
-           case "generatepdf":
+           case PdfCommandType.GeneratePdf:
                await syncService.GeneratePDF();
                break;
-           default:
-               Console.WriteLine("Unknown command. Use 'extract' or 'generatePdf'.");
+            case PdfCommandType.PreviewPdf:
+                syncService.PreviewPDF();
+                break;
+            default:
+               Console.WriteLine("Unknown command. Use 'extract' or 'generatePdf' or 'previewPdf'.");
                break;
         }
     }
