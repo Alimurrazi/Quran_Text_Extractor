@@ -158,60 +158,94 @@ namespace quranTranslationExtractor.Application
             {
                 container.Page(page =>
                 {
-                    page.Margin(40);
                     page.Size(PageSizes.A4);
+                    page.Margin(50);
+                    page.DefaultTextStyle(x => x.FontColor(Colors.Black));
 
-                    foreach (var sura in suras)
+                    page.Background()
+                        .ExtendHorizontal()
+                        .ExtendVertical()
+                        .Padding(12)
+                        .Border(1, Colors.Black);
+
+                    page.Content().Column(col =>
                     {
-                        page.Content().Column(col =>
+                        col.Spacing(15);
+
+                        foreach (var sura in suras)
                         {
+                            col.Item().Row(row =>
+                            {
+                                row.RelativeItem().LineHorizontal(1).LineColor(Colors.Black);
+                                row.AutoItem().Text("۞").FontSize(12).AlignCenter();
+                                row.RelativeItem().LineHorizontal(1).LineColor(Colors.Black);
+                            });
+
                             col.Item().Text(sura.Name)
-                            .FontSize(22).Bold().FontColor(Colors.Green.Darken2);
+                                .FontSize(20).Bold().AlignCenter();
 
-                            col.Spacing(15);
+                            col.Item().Row(row =>
+                            {
+                                row.RelativeItem().LineHorizontal(1).LineColor(Colors.Black);
+                            });
 
-                            var ayatsInSura = ayats.Where(ayat => ayat.SuraIndex == sura.SuraIndex);
+                            var ayatsInSura = ayats.Where(a => a.SuraIndex == sura.SuraIndex);
 
                             foreach (var ayat in ayatsInSura)
                             {
-                                col.Item().Column(vcol =>
+                                col.Item().Column(verseCol =>
                                 {
-                                    vcol.Item().Text($"({ayat.AyatIndex}) {ayat.Content}")
-                                        .FontSize(14)
-                                        .Bold()
-                                        .FontColor(Colors.Black);
+                                    verseCol.Item().Row(row =>
+                                    {
+                                        row.ConstantItem(26).Height(18)
+                                           .Border(1, Colors.Black)
+                                           .CornerRadius(9)
+                                           .AlignCenter().AlignMiddle()
+                                           .Text(ayat.AyatIndex.ToString()).Bold().FontSize(10);
 
-                                    var tafsirsInAyat = tafsirs.Where(tafsir => tafsir.SuraIndex == sura.SuraIndex
-                                    && tafsir.AyatIndex == ayat.AyatIndex);
+                                        row.RelativeItem()
+                                           .PaddingLeft(8)
+                                           .Text(ayat.Content)
+                                           .FontSize(10)
+                                           .Bold();
+                                    });
+
+                                    var tafsirsInAyat = tafsirs.Where(t =>
+                                        t.SuraIndex == sura.SuraIndex &&
+                                        t.AyatIndex == ayat.AyatIndex);
 
                                     if (tafsirsInAyat.Any())
                                     {
-                                        foreach (var tafsir in tafsirsInAyat)
-                                        {
-                                            vcol.Item().Text($"{tafsir.TafsirIndexInSura}   • {tafsir.Content}")
-                                                .FontSize(12)
-                                                .FontColor(Colors.Grey.Darken2);
-                                        }
+                                        verseCol.Item()
+                                            .PaddingLeft(24)
+                                            .Column(tcol =>
+                                            {
+                                                tcol.Spacing(6);
+                                                foreach (var t in tafsirsInAyat)
+                                                {
+                                                    tcol.Item()
+                                                       .Text($"{t.TafsirIndexInSura}. {t.Content}")
+                                                       .FontSize(8)
+                                                       .Italic()
+                                                       .FontColor(Colors.Grey.Darken2);
+                                                }
+                                            });
                                     }
                                 });
+                                col.Item().PaddingBottom(4);
                             }
-                        });
-                    }
-                    page.Footer().AlignCenter()
-                    .Text(x =>
+                        }
+                    });
+
+                    page.Footer().AlignCenter().Text(txt =>
                     {
-                        x.Span("Page ").FontSize(10);
-                        x.CurrentPageNumber().FontSize(10);
+                        txt.CurrentPageNumber().FontSize(10);
                     });
                 });
-            }).GeneratePdf(filePath);
-        }
+            })
+            .GeneratePdf(filePath);
 
-        private void RenderPdf(string html)
-        {
-            //PdfDocument pdf = new PdfDocument();
-            //pdf = PdfGenerator.GeneratePdf(html, PageSize.A4);
-            //pdf.Save("quran_bn_text.pdf");
+
         }
 
     }
