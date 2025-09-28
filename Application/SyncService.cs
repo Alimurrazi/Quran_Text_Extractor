@@ -54,7 +54,7 @@ namespace quranTranslationExtractor.Application
                     {
                         if (httpResponse is not null)
                         {
-                            formattedResponse = JsonSerializer.Deserialize<Response>(httpResponse);
+                            formattedResponse = JsonSerializer.Deserialize<Response>(httpResponse) ?? throw new InvalidOperationException("Failed to deserialize the http response into Response");
                         }
                     }
                     catch (JsonException ex)
@@ -62,16 +62,19 @@ namespace quranTranslationExtractor.Application
                         Console.WriteLine($"Failed to deserialize JSON: {ex.Message}");
                     }
 
-                    if (formattedResponse is not null && formattedResponse.Data.Rows.Verses.Length == 0)
+                    if(formattedResponse is not null)
                     {
-                        hasData = false;
-                        break;
+                        if (formattedResponse.Data.Rows.Verses.Length == 0)
+                        {
+                            hasData = false;
+                            break;
+                        }
+                        if (index == 1 && formattedResponse.Data is not null)
+                        {
+                            await InsertSura(formattedResponse.Data.Rows.Sura);
+                        }
+                        await PopulateContents(formattedResponse);
                     }
-                    if (index == 1 && formattedResponse.Data is not null)
-                    {
-                        await InsertSura(formattedResponse.Data.Rows.Sura);
-                    }
-                    await PopulateContents(formattedResponse);
                     index++;
                 }
             }
