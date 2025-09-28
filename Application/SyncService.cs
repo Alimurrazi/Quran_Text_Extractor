@@ -207,12 +207,6 @@ namespace quranTranslationExtractor.Application
                     page.Margin(50);
                     page.DefaultTextStyle(x => x.FontColor(Colors.Black));
 
-                    page.Background()
-                        .ExtendHorizontal()
-                        .ExtendVertical()
-                        .Padding(12)
-                        .Border(1, Colors.Black);
-
                     page.Content().Column(col =>
                     {
                         col.Spacing(15);
@@ -226,12 +220,11 @@ namespace quranTranslationExtractor.Application
                                 row.RelativeItem().LineHorizontal(1).LineColor(Colors.Black);
                             });
 
-                            col.Item().Text(sura.Name)
-                                .FontSize(20).Bold().AlignCenter();
-
-                            col.Item().Row(row =>
+                            col.Item().AlignCenter().Text(txt =>
                             {
-                                row.RelativeItem().LineHorizontal(1).LineColor(Colors.Black);
+                                txt.Span("❖ ").FontSize(18);
+                                txt.Span(sura.Name).FontSize(20).Bold();
+                                txt.Span(" ❖").FontSize(18);
                             });
 
                             var ayatsInSura = ayats.Where(a => a.SuraIndex == sura.SuraIndex);
@@ -243,16 +236,17 @@ namespace quranTranslationExtractor.Application
                                     verseCol.Item().Row(row =>
                                     {
                                         row.ConstantItem(26).Height(18)
-                                           .Border(1, Colors.Black)
-                                           .CornerRadius(9)
+                                           .Border(1, Colors.Grey.Lighten1)
+                                           .CornerRadius(12)
                                            .AlignCenter().AlignMiddle()
-                                           .Text(ayat.AyatIndex.ToString()).Bold().FontSize(10);
+                                           .Text(ayat.AyatIndex.ToString()).FontSize(10);
+
 
                                         row.RelativeItem()
+                                           .PaddingTop(2)
                                            .PaddingLeft(8)
                                            .Text(ayat.Content)
-                                           .FontSize(10)
-                                           .Bold();
+                                           .FontSize(8);
                                     });
 
                                     var tafsirsInAyat = tafsirs.Where(t =>
@@ -262,16 +256,20 @@ namespace quranTranslationExtractor.Application
                                     if (tafsirsInAyat.Any())
                                     {
                                         verseCol.Item()
-                                            .PaddingLeft(24)
+                                            .PaddingTop(6)
+                                            .PaddingLeft(32)
                                             .Column(tcol =>
                                             {
                                                 tcol.Spacing(6);
                                                 foreach (var t in tafsirsInAyat)
                                                 {
                                                     tcol.Item()
+                                                    .Background(Colors.Grey.Lighten2)
+                                                    .Padding(8)
                                                        .Text($"{t.TafsirIndexInSura}. {t.Content}")
                                                        .FontSize(8)
                                                        .FontColor(Colors.Grey.Darken2);
+                                                       
                                                 }
                                             });
                                     }
@@ -283,7 +281,9 @@ namespace quranTranslationExtractor.Application
 
                     page.Footer().AlignCenter().Text(txt =>
                     {
-                        txt.CurrentPageNumber().FontSize(10);
+                        txt.Span("❖ ").FontSize(10);
+                        txt.CurrentPageNumber().FontSize(10).Bold();
+                        txt.Span(" ❖").FontSize(10);
                     });
                 });
             });
@@ -294,7 +294,6 @@ namespace quranTranslationExtractor.Application
         {
             try
             {
-
                 var suraTask =  _context.Suras.ToListAsync();
                 var ayatTask = _context.Ayats.ToListAsync();
                 var tafsirTask = _context.Tafsirs.ToListAsync();
