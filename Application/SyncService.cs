@@ -173,7 +173,13 @@ namespace quranTranslationExtractor.Application
 {
     new Ayat { Id = 1, AyatIndex = 1, SuraIndex = 1, Content = "সমস্ত প্রশংসা আল্লাহর, যিনি জগতসমূহের প্রতিপালক" },
     new Ayat { Id = 2, AyatIndex = 2, SuraIndex = 1, Content = "যিনি সকলের প্রতি দয়াবান, পরম দয়ালু" },
-    new Ayat { Id = 3, AyatIndex = 255, SuraIndex = 2, Content = "আল্লাহ, তিনি ছাড়া কোনো সত্য উপাস্য নেই, তিনি চিরঞ্জীব, সবকিছুর ধারক ..." }
+    new Ayat { Id = 3, AyatIndex = 255, SuraIndex = 2, Content = "আল্লাহ, তিনি ছাড়া কোনো সত্য উপাস্য নেই, তিনি চিরঞ্জীব, সবকিছুর ধারক ..." },
+    new Ayat { Id = 4, AyatIndex = 3, SuraIndex = 1, Content = "সমস্ত প্রশংসা আল্লাহর, যিনি জগতসমূহের প্রতিপালক" },
+    new Ayat { Id = 5, AyatIndex = 4, SuraIndex = 1, Content = "যিনি সকলের প্রতি দয়াবান, পরম দয়ালু" },
+    new Ayat { Id = 6, AyatIndex = 256, SuraIndex = 2, Content = "আল্লাহ, তিনি ছাড়া কোনো সত্য উপাস্য নেই, তিনি চিরঞ্জীব, সবকিছুর ধারক ..." },
+    new Ayat { Id = 7, AyatIndex = 5, SuraIndex = 1, Content = "সমস্ত প্রশংসা আল্লাহর, যিনি জগতসমূহের প্রতিপালক" },
+    new Ayat { Id = 8, AyatIndex = 6, SuraIndex = 1, Content = "যিনি সকলের প্রতি দয়াবান, পরম দয়ালু" },
+    new Ayat { Id = 9, AyatIndex = 257, SuraIndex = 2, Content = "আল্লাহ, তিনি ছাড়া কোনো সত্য উপাস্য নেই, তিনি চিরঞ্জীব, সবকিছুর ধারক ..." }
 };
 
             List<Domain.Tafsir> tafsirs = new()
@@ -191,6 +197,21 @@ namespace quranTranslationExtractor.Application
     new Domain.Tafsir
     {
         Id = 3, SuraIndex = 2, AyatIndex = 255, TafsirIndexInSura = 1,
+        Content = "আয়াতুল কুরসী: এই আয়াতে আল্লাহর সর্বশক্তিমান হওয়ার ব্যাখ্যা রয়েছে।"
+    },
+        new Domain.Tafsir
+    {
+        Id = 4, SuraIndex = 1, AyatIndex = 4, TafsirIndexInSura = 1,
+        Content = "আপনি যদি কোনও ইমারতের প্রশংসা করেন, তবে প্রকৃতপক্ষে সে প্রশংসা হয় ইমারতটির নির্মাতার। সুতরাং এই সৃষ্টিজগতের যে-কোনও বস্তুর প্রশংসা করা হলে পরিণামে সে প্রশংসা হয় আল্লাহ তাআলার, যেহেতু সে বস্তু তাঁরই সৃষ্টি। জগতসমূহের প্রতিপালক বলে সে দিকেই ইশারা করা হয়েছে। মানব জগত, জড় জগত ও উদ্ভিদ জগত থেকে শুরু করে নভোমণ্ডল, নক্ষত্রমণ্ডল ও ফিরিশতা জগত পর্যন্ত সব কিছুর সৃজন ও প্রতিপালন আল্লাহ তাআলারই কাজ। এসব জগতের মধ্যে যা কিছু প্রশংসাযোগ্য আছে, আল্লাহ তাআলার সৃজন ও রবূবিয়্যাতের মহিমার কারণেই তা প্রশংসার যোগ্যতা লাভ করেছে।।"
+    },
+    new Domain.Tafsir
+    {
+        Id = 5, SuraIndex = 1, AyatIndex = 5, TafsirIndexInSura = 2,
+        Content = "আরবী নিয়ম অনুসারে \"رَحْمٰنُ\"-এর অর্থ সেই সত্তা, যার রহমত ও দয়া অত্যন্ত প্রশস্ত (Extensive) অর্থাৎ যার রহমত দ্বারা সকলেই উপকৃত হয়। আর \"رَحِيْمُ\" অর্থ সেই সত্তা, যার রহমত খুব বেশি (Intensive) অর্থাৎ যার প্রতি তা হয়, পরিপূর্ণরূপে হয়। দুনিয়ায় আল্লাহ তাআলার রহমত সকলেই ভোগ করে। মুমিন ও কাফির নির্বিশেষে সকলেই তা দ্বারা উপকৃত হয়। সকলেই রিযক পায় এবং দুনিয়ার নি‘আমতসমূহ দ্বারা সকলেই লাভবান হয়। আখিরাতে যদিও কাফিরদের প্রতি রহমত হবে না, কিন্তু যাদের প্রতি (অর্থাৎ মুমিনদের প্রতি) হবে, পরিপূর্ণরূপে হবে। ফলে সেখানে নি‘আমতের সাথে কোনও রকমের দুঃখ-কষ্ট থাকবে না। رَحْمٰنُ ও رَحِيْمُ -এর মধ্যে এই যে পার্থক্য, এটা প্রকাশ করার জন্যই رَحْمٰنُ -এর তরজমা করা হয়েছে ‘সকলের প্রতি দয়াবান’ আর رَحِيْمُ-এর তরজমা করা হয়েছে ‘পরম দয়ালু’।"
+    },
+    new Domain.Tafsir
+    {
+        Id = 6, SuraIndex = 2, AyatIndex = 256, TafsirIndexInSura = 1,
         Content = "আয়াতুল কুরসী: এই আয়াতে আল্লাহর সর্বশক্তিমান হওয়ার ব্যাখ্যা রয়েছে।"
     }
 };
@@ -225,9 +246,9 @@ namespace quranTranslationExtractor.Application
 
                             col.Item().AlignCenter().Text(txt =>
                             {
-                                txt.Span("❖ ").FontSize(18);
+                                txt.Span("✦ ").FontSize(18);
                                 txt.Span(sura.Name).FontSize(20).Bold();
-                                txt.Span(" ❖").FontSize(18);
+                                txt.Span(" ✦").FontSize(18);
                             });
 
                             var ayatsInSura = ayats.Where(a => a.SuraIndex == sura.SuraIndex);
@@ -238,17 +259,19 @@ namespace quranTranslationExtractor.Application
                                 {
                                     verseCol.Item().Row(row =>
                                     {
-                                        row.ConstantItem(26).Height(18)
-                                           .Border(1, Colors.Grey.Lighten1)
-                                           .CornerRadius(12)
+
+                                        row.ConstantItem(20).Height(20)
+                                           .Background(Colors.Grey.Lighten2)
+                                           .CornerRadius(10)
                                            .AlignCenter().AlignMiddle()
-                                           .Text(ayat.AyatIndex.ToString()).FontSize(10);
+                                           .Text(ayat.AyatIndex.ToString())
+                                           .FontSize(9).Bold();
 
 
                                         row.RelativeItem()
-                                           .PaddingTop(2)
+                                           .PaddingTop(4)
                                            .PaddingLeft(8)
-                                           .Text(ayat.Content)
+                                           .Text($"{ayat.Content} ✿")
                                            .FontSize(8);
                                     });
 
@@ -259,8 +282,8 @@ namespace quranTranslationExtractor.Application
                                     if (tafsirsInAyat.Any())
                                     {
                                         verseCol.Item()
-                                            .PaddingTop(6)
                                             .PaddingLeft(32)
+                                            .CornerRadius(10)
                                             .Column(tcol =>
                                             {
                                                 tcol.Spacing(6);
@@ -272,12 +295,10 @@ namespace quranTranslationExtractor.Application
                                                        .Text($"{t.TafsirIndexInSura}. {t.Content}")
                                                        .FontSize(8)
                                                        .FontColor(Colors.Grey.Darken2);
-                                                       
                                                 }
                                             });
                                     }
                                 });
-                                col.Item().PaddingBottom(4);
                             }
                         }
                     });
