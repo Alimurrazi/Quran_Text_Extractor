@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace quranTranslationExtractor.Application
@@ -31,7 +32,7 @@ namespace quranTranslationExtractor.Application
         public async Task ExtractAndSyncContent()
         {
             var index = 1;
-            var suraIndex = 103;
+            var suraIndex = 2;
             //            for(int i = 1;i<=114;i++)
             for (int i = 1; i <= 1; i++)
             {
@@ -154,7 +155,7 @@ namespace quranTranslationExtractor.Application
 
         public async Task GeneratePDF()
         {
-            var(suras, ayats, tafsirs) = await FetchDataAsync();
+            var (suras, ayats, tafsirs) = await FetchDataAsync();
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "quran_bn_text.pdf");
             var renderedPdf = GetRenderedPdf(suras, ayats, tafsirs);
@@ -223,6 +224,8 @@ namespace quranTranslationExtractor.Application
 
         private Document GetRenderedPdf(List<Domain.Sura> suras, List<Ayat> ayats, List<Domain.Tafsir> tafsirs)
         {
+            suras = suras.OrderBy(sura=>sura.SuraIndex).ToList();
+
             var document = Document.Create(container =>
             {
                 container.Page(page =>
@@ -267,12 +270,38 @@ namespace quranTranslationExtractor.Application
                                            .Text(ayat.AyatIndex.ToString())
                                            .FontSize(9).Bold();
 
-
                                         row.RelativeItem()
-                                           .PaddingTop(4)
-                                           .PaddingLeft(8)
-                                           .Text($"{ayat.Content} ✿")
-                                           .FontSize(8);
+    .PaddingTop(4)
+    .PaddingLeft(8)
+    .Text(txt =>
+    {
+        var regex = new Regex(@"#%(.*?)%#");
+        int lastIndex = 0;
+
+        foreach (Match match in regex.Matches(ayat.Content))
+        {
+            if (match.Index > lastIndex)
+            {
+                txt.Span(ayat.Content.Substring(lastIndex, match.Index - lastIndex))
+                   .FontSize(9);
+            }
+
+            txt.Span(match.Groups[1].Value)
+               .FontSize(7).Underline()
+               .FontColor(Colors.Grey.Medium);
+
+            lastIndex = match.Index + match.Length;
+        }
+
+        if (lastIndex < ayat.Content.Length)
+        {
+            txt.Span(ayat.Content.Substring(lastIndex))
+               .FontSize(9);
+        }
+
+        txt.Span(" ✿").FontSize(9);
+    });
+
                                     });
 
                                     var tafsirsInAyat = tafsirs.Where(t =>
@@ -303,7 +332,7 @@ namespace quranTranslationExtractor.Application
                         }
                     });
 
-                    page.Footer().AlignCenter().Text(txt =>
+                    page.Footer().PaddingTop(4).AlignCenter().Text(txt =>
                     {
                         txt.Span("❖ ").FontSize(10);
                         txt.CurrentPageNumber().FontSize(10).Bold();
