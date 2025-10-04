@@ -40,6 +40,12 @@ This is a **console application** with 3 main options:
 4. Run again → choose Preview PDF to check layout with sample data.
 5. Run again → choose Generate PDF to build the final Quran Bangla translation PDF.
 
+## 📄 Reference Output
+For reference, a sample **generated Quran PDF** is also attached.  
+Please note that when you generate a new PDF, it will be saved automatically inside the project’s **`bin` folder`**.
+
+---
+
 ---
 ## 📌 Notes
 - This tool is for personal use, respecting scholarly concerns while enabling easier access to Bangla Quran translations. 
