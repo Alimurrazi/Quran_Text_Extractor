@@ -31,15 +31,14 @@ namespace quranTranslationExtractor.Application
 
         public async Task ExtractAndSyncContent()
         {
-            var index = 1;
-            var suraIndex = 2;
-            //            for(int i = 1;i<=114;i++)
-            for (int i = 1; i <= 1; i++)
+            var pageNumber = 1;
+            for (int suraIndex = 1; suraIndex <= 114; suraIndex++)
             {
                 bool hasData = true;
+                pageNumber = 1;
                 while (hasData)
                 {
-                    var url = $"https://api.muslimbangla.com/sura/{suraIndex}?tables=bn_taqi&page={index}&wordByWord=false&language=bengali";
+                    var url = $"https://api.muslimbangla.com/sura/{suraIndex}?tables=bn_taqi&page={pageNumber}&wordByWord=false&language=bengali";
                     string? httpResponse = null;
                     Response formattedResponse = new Response();
                     try
@@ -70,20 +69,20 @@ namespace quranTranslationExtractor.Application
                             hasData = false;
                             break;
                         }
-                        if (index == 1 && formattedResponse.Data is not null)
+                        if (pageNumber == 1 && formattedResponse.Data is not null)
                         {
                             await InsertSura(formattedResponse.Data.Rows.Sura);
                         }
                         await PopulateContents(formattedResponse);
                     }
-                    index++;
+                    pageNumber++;
                 }
             }
         }
 
         private async Task InsertSura(Data.Sura sura)
         {
-            var isExists = await _context.Suras.AnyAsync(sura => sura.SuraIndex == sura.Id);
+            var isExists = await _context.Suras.AnyAsync(dbSura => dbSura.SuraIndex == sura.SuraId);
 
             if (isExists)
             {
