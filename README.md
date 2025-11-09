@@ -4,7 +4,7 @@
 This project provides a way to extract and use **Bangla translations of the Quran** without directly handling the Arabic text.
 
 - Many scholars strongly discourage touching the **original Arabic Quran text** without *wudu* (ablution), even on a mobile screen.  
-- Another branch of scholars discourages reading any Quran translation where the authors have little or no proper Islamic knowledge.  
+- Scholars also discourage reading any Quran translation where the authors have little or no proper Islamic knowledge.  
 - Although there are many Qurans available with Bangla translations, some editions are **too small**, **too detailed with tafsir**, or **only available in hard copy**, making them inconvenient for my regular daily use.
 - For personal usage, this tool focuses on **Bangla-only translations**, making it easier to read and carry everywhere while respecting those scholarly perspectives.  
 - This project uses a public API that provides **authentic translations from world-renowned scholar Mufti Taqi Usmani**.
